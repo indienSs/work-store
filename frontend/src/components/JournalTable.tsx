@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, Card, message, Space, Table } from "antd";
+import dayjs from "dayjs";
 import { deleteJournal, getJournals } from "../api/journal";
 import ModifyJournalModal from "./ModifyJournalModal";
 import { useUpdate } from "../store/updateContext";
@@ -37,6 +38,9 @@ export default function JournalTable() {
       title: 'Дата выполнения',
       dataIndex: 'completed',
       key: 'completed',
+      render: (_: any, record: JournalData) => {
+        return dayjs(record.completed).format("DD.MM.YYYY HH:mm");
+      },
       sorter: (a: JournalData, b: JournalData) => {
         return new Date(a.completed).getTime() - new Date(b.completed).getTime();
       }
@@ -59,7 +63,7 @@ export default function JournalTable() {
     {
       title: 'Действия',
       key: 'actions',
-      render: (_: any, record: any) => (
+      render: (_: any, record: JournalData) => (
         <Space size="medium">
           <Button onClick={() => updateItem(record)}>Редактировать</Button>
           <Button onClick={() => deleteItem(record.id)} type="dashed">Удалить</Button>
