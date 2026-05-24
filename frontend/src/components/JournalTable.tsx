@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { Button, Card, Form, message, Space, Table } from "antd";
-import { addJournal, getJournals } from "../api/journal";
+import { Button, Card, message, Space, Table } from "antd";
+import { getJournals } from "../api/journal";
 import type { JournalData } from "../types/journal";
 
 export default function JournalTable() {
