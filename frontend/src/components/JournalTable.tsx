@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import { Button, Card, message, Space, Table } from "antd";
 import { deleteJournal, getJournals } from "../api/journal";
 import ModifyJournalModal from "./ModifyJournalModal";
-import type { JournalData } from "../types/journal";
 import { useUpdate } from "../store/updateContext";
+import type { JournalData } from "../types/journal";
 
 export default function JournalTable() {
   //@ts-ignore
@@ -19,7 +19,6 @@ export default function JournalTable() {
 
   const deleteItem = (id: number) => {
     deleteJournal(id)
-      .then(() => message.success("Запись удалена"))
       .then(getItems)
       .catch(err => message.error(err.message));
   }
@@ -38,6 +37,9 @@ export default function JournalTable() {
       title: 'Дата выполнения',
       dataIndex: 'completed',
       key: 'completed',
+      sorter: (a: JournalData, b: JournalData) => {
+        return new Date(a.completed).getTime() - new Date(b.completed).getTime();
+      }
     },
     {
       title: 'Вид работ',
@@ -73,7 +75,7 @@ export default function JournalTable() {
   return (
     <Card>
       <ModifyJournalModal item={modifiedItem} setItem={setModfiedItem} />
-      <Table dataSource={data} columns={columns} />
+      <Table dataSource={data} columns={columns} rowKey="id" />
     </Card>
   );
 }

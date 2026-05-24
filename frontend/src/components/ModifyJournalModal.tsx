@@ -25,7 +25,6 @@ export default function ModifyJournalModal(props: {
   const onFinish = (values: JournalData) => {
     if (props.item !== null) {
       updateJournal(props.item.id, values)
-        .then(() => message.success("Успешно изменено!"))
         .then(toggleUpdate)
         .then(() => props.setItem(null));
     }

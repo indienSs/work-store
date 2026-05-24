@@ -47,7 +47,8 @@ export default async function (fastify) {
           , id_job = $2
           , id_measure_unit = $3
           , value = $4
-          , updated = $5
+          , completed = $5
+          , updated = NOW()
         WHERE id = $6
       `, [record.id_employee, record.id_job, record.id_measure_unit, record.value, record.completed, request.params.id]);
       return { status: 'ok' };

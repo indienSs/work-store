@@ -20,7 +20,6 @@ export default function AddJournalItem() {
 
   const onFinish = (values: JournalData) => {
     addJournal(values)
-      .then(() => message.success("Пользователь добавлен!"))
       .then(toggleUpdate);
   };
 
