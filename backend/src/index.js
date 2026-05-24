@@ -1,11 +1,20 @@
 import Fastify from 'fastify';
+import cors from '@fastify/cors';
 import pg from 'pg';
 import dotenv from 'dotenv';
-import healthRoutes from '../routes/health.js';
+import journalRoutes from '../routes/journal.js';
+import employeesRoutes from '../routes/employees.js';
+import measureUnitsRoutes from '../routes/measureUnits.js';
+import jobsRoutes from '../routes/jobs.js';
 
 dotenv.config();
 
 const fastify = Fastify({ logger: true });
+
+await fastify.register(cors, {
+  origin: true,
+  credentials: true,
+});
 
 const { Pool } = pg;
 const pool = new Pool({
@@ -18,8 +27,9 @@ const pool = new Pool({
 
 fastify.decorate('db', pool);
 
-fastify.register(healthRoutes);
+fastify.register(journalRoutes);
+fastify.register(employeesRoutes);
+fastify.register(measureUnitsRoutes);
+fastify.register(jobsRoutes);
 
-fastify.listen({ port: 3000, host: '0.0.0.0' }, (err) => {
-  if (err) throw err;
-});
+fastify.listen({ port: 3000, host: '0.0.0.0' }, (err) => { if (err) throw err; });

@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS employees (
+    id SERIAL PRIMARY KEY,
+    f VARCHAR(100) NOT NULL,
+    i VARCHAR(100) NOT NULL,
+    o VARCHAR(100)
+);
+
+CREATE TABLE IF NOT EXISTS jobs (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS measure_units (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS journal (
+    id SERIAL PRIMARY KEY,
+    id_employee INTEGER NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+    id_job INTEGER NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+    id_measure_unit INTEGER NOT NULL REFERENCES measure_units(id) ON DELETE CASCADE,
+    value NUMERIC(15,2) NOT NULL,
+    completed TIMESTAMP NOT NULL DEFAULT CURRENT_DATE,
+    updated TIMESTAMP NOT NULL DEFAULT CURRENT_DATE,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_DATE
+);
+
+CREATE INDEX IF NOT EXISTS idx_journal_employee ON journal(id_employee);
+CREATE INDEX IF NOT EXISTS idx_journal_job ON journal(id_job);
+CREATE INDEX IF NOT EXISTS idx_journal_measure ON journal(id_measure_unit);
+CREATE INDEX IF NOT EXISTS idx_journal_created ON journal(created);

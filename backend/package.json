@@ -4,12 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "migrate": "node scripts/migrate.js"
   },
   "dependencies": {
+    "@fastify/cors": "^8.5.0",
+    "dotenv": "^16.3.0",
     "fastify": "^4.24.0",
-    "pg": "^8.11.0",
-    "dotenv": "^16.3.0"
+    "node-pg-migrate": "^8.0.4",
+    "pg": "^8.11.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.0"
