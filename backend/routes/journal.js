@@ -4,8 +4,12 @@ export default async function (fastify) {
     try {
       const data = await fastify.db.query(`
         SELECT journal.id
+          , id_employee
+          , id_job
+          , id_measure_unit
           , jobs.name
-          , CONCAT_WS(' ', journal.value::text, measure_units.name) AS value
+          , journal.value
+          , CONCAT_WS(' ', journal.value::text, measure_units.name) AS value_text
           , CONCAT_WS(' ', employees.f, employees.i, employees.o) AS fio
           , completed
           , created
@@ -55,11 +59,10 @@ export default async function (fastify) {
   fastify.delete('/journal/:id', async (request, reply) => {
     try {
       const id = request.params.id;
-      console.log(request.params)
-      // await fastify.db.query(`
-      //   DELETE FROM journal
-      //   WHERE id = $1
-      // `, [id]);
+      await fastify.db.query(`
+        DELETE FROM journal
+        WHERE id = $1
+      `, [id]);
       return { status: 'ok' };
     } catch (err) {
       reply.status(500).send({ status: 'error', message: err.message });

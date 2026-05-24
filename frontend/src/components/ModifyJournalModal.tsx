@@ -1,16 +1,20 @@
-import { Button, Card, DatePicker, Form, Input, message, Select } from "antd";
+import { Button, DatePicker, Form, Input, message, Modal, Select } from "antd";
 import { useEffect, useState } from "react";
 import { getJobs } from "../api/jobs";
 import { getMeasureUnits } from "../api/measureUnits";
 import { getEmployees } from "../api/employee";
-import { addJournal } from "../api/journal";
-import type { Job } from "../types/jobs";
 import type { MeasureUnit } from "../types/measureUnits";
-import type { Employee } from "../types/employee";
 import type { JournalData } from "../types/journal";
+import type { Employee } from "../types/employee";
+import type { Job } from "../types/jobs";
+import dayjs from "dayjs";
+import { updateJournal } from "../api/journal";
 import { useUpdate } from "../store/updateContext";
 
-export default function AddJournalItem() {
+export default function ModifyJournalModal(props: {
+  item: JournalData | null,
+  setItem: React.Dispatch<React.SetStateAction<JournalData | null>>,
+}) {
   //@ts-ignore
   const { toggleUpdate } = useUpdate();
   const [jobOptions, setJobOptions] = useState<{value: number, label: string}[]>([]);
@@ -19,9 +23,12 @@ export default function AddJournalItem() {
   const [form] = Form.useForm();
 
   const onFinish = (values: JournalData) => {
-    addJournal(values)
-      .then(() => message.success("Пользователь добавлен!"))
-      .then(toggleUpdate);
+    if (props.item !== null) {
+      updateJournal(props.item.id, values)
+        .then(() => message.success("Успешно изменено!"))
+        .then(toggleUpdate)
+        .then(() => props.setItem(null));
+    }
   };
 
   useEffect(() => {
@@ -48,15 +55,20 @@ export default function AddJournalItem() {
   }, []);
 
   return (
-    <Card style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+    <Modal
+      open={!!props.item}
+      footer={null}
+      onCancel={() => props.setItem(null)}
+    >
       <Form
         form={form}
         onFinish={onFinish}
-        style={{ maxWidth: 600 }}
+        style={{ maxWidth: 800 }}
       >
           <Form.Item
             label="Вид работ"
             name="id_job"
+            initialValue={props.item?.id_job || ""}
             rules={[{ required: true, message: 'Введите вид работ!' }]}
           >
             <Select options={jobOptions} />
@@ -64,6 +76,7 @@ export default function AddJournalItem() {
           <Form.Item
             label="Объем работ"
             name="value"
+            initialValue={props.item?.value || ""}
             rules={[{ required: true, message: 'Введите объем работ!' }]}
           >
             <Input type="number" />
@@ -71,6 +84,7 @@ export default function AddJournalItem() {
           <Form.Item
             label="Единица измерения"
             name="id_measure_unit"
+            initialValue={props.item?.id_measure_unit || ""}
             rules={[{ required: true, message: 'Введите единицу измерения!' }]}
           >
             <Select placeholder="" options={unitOptions} />
@@ -78,6 +92,7 @@ export default function AddJournalItem() {
           <Form.Item
             label="ФИО"
             name="id_employee"
+            initialValue={props.item?.id_employee || ""}
             rules={[{ required: true, message: 'Выберите работника!' }]}
           >
             <Select options={employeeOptions} />
@@ -85,14 +100,15 @@ export default function AddJournalItem() {
           <Form.Item
             label="Дата выполнения"
             name="completed"
+            initialValue={props.item?.completed ? dayjs(props.item.completed) : dayjs()}
             rules={[{ required: true, message: 'Выберите дату выполнения!' }]}
           >
             <DatePicker showTime/>
           </Form.Item>
           <Button type="primary" htmlType="submit">
-            Добавить
+            Изменить
           </Button>
       </Form>
-    </Card>
+    </Modal>
   );
 }

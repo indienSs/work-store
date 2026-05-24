@@ -15,9 +15,9 @@ export async function addJournal(journal: JournalData) {
   return res.data;
 }
 
-export async function updateJournal(journal: JournalData) {
-  const data = await fetch(`http://localhost:3000/journal/${journal.id}`, {
-    method: "POST",
+export async function updateJournal(id: number, journal: JournalData) {
+  const data = await fetch(`http://localhost:3000/journal/${id}`, {
+    method: "PUT",
     body: JSON.stringify(journal),
   });
   const res = await data.json();
@@ -25,7 +25,7 @@ export async function updateJournal(journal: JournalData) {
 }
 
 export async function deleteJournal(id: number) {
-  const data = await fetch(`http://localhost:3000/journal/${id}`);
+  const data = await fetch(`http://localhost:3000/journal/${id}`, { method: "DELETE" });
   const res = await data.json();
   return res.data;
 }
